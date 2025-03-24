@@ -15,4 +15,3 @@ password TEXT
 
 connection.commit()
 connection.close()
-
