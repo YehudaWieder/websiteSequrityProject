@@ -1,11 +1,15 @@
 from flask import Flask, render_template, request, session, redirect, url_for
 import sqlite3
 import os
+import bcrypt
 
 local_db = "users_db.db"
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
+app.config['SESSION_COOKIE_SECURE'] = True
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 
 
 @app.route('/')
@@ -17,11 +21,10 @@ def home_page():
     else:
         return redirect(url_for('login'))
 
-
-@app.route('/sign_in', methods=['GET', 'POST'])
-def sign_in():
+@app.route('/sign_up', methods=['GET', 'POST'])
+def sign_up():
     if request.method == 'GET':
-        return render_template('sign_in.html')
+        return render_template('sign_up.html')
     else:
         user_details = (
             request.form['user_name'],
@@ -30,7 +33,7 @@ def sign_in():
             request.form['password']
         )
         insert_user(user_details)
-        return render_template('sign_in_success.html')
+        return render_template('sign_up_success.html')
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -42,7 +45,7 @@ def login():
         password = request.form['password']
         auth_result = authenticate_user(username, password)
         if auth_result == "user not exist":
-            return redirect(url_for('sign_in'))
+            return redirect(url_for('sign_up'))
         elif auth_result:
             session['user_name'] = username
             return render_template('login_success.html', username=username)
@@ -110,14 +113,16 @@ def authenticate_user(user_name_input, password_input):
     cursor.execute(sql_execute_string, (user_name_input,))
     user_data = cursor.fetchall()
     if user_data:
-        user_password = user_data[0][0]
-        return user_password == password_input
+        stored_hashed_password = user_data[0][0]
+        return bcrypt.checkpw(password_input.encode(), stored_hashed_password)
     return "user not exist"
 
 
 def insert_user(user_details):
     connection = sqlite3.connect(local_db)
     cursor = connection.cursor()
+    hashed_password = bcrypt.hashpw(user_details[3].encode(), bcrypt.gensalt())
+    user_details = (user_details[0], user_details[1], user_details[2], hashed_password)
     sql_execute_string = 'INSERT INTO users_table (user_name, firstname, surname, password) VALUES (?, ?, ?, ?)'
     cursor.execute(sql_execute_string, user_details)
     connection.commit()

@@ -23,26 +23,13 @@
     <hr class="my-4">
 </div>
 
-<table class="table container mt-5 mb-5">
-    <thead class="table-dark">
-    <tr>
-        <th scope=col>users_name</th>
-        <th scope=col>firstname</th>
-        <th scope=col>surname</th>
-        <th scope=col>password</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for user in users_data %}
-    <tr>
-        <th scope=row>{{ user[0] }}</th>
-        <th>{{ user[1] }}</th>
-        <th>{{ user[2] }}</th>
-        <th>{{ user[3] }}</th>
-    </tr>
-    {% endfor %}
-    </tbody>
-</table>
+{% for user in users_data %}
+<div class="container mt-3">
+    <b>{{ user[0] }}</b>
+    <input type="text" class="form-control" id="message" name="message" placeholder="Send a message to this user...">
+    <button type="submit" class="btn btn-primary btn-dark">send >></button>
+</div>
+{% endfor %}
 
 <!-- Optional JavaScript; choose one of the two! -->
 
