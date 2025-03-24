@@ -136,3 +136,4 @@ def update_user(new_details):
 
 if __name__ == '__main__':
     app.run()
+
