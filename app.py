@@ -7,9 +7,9 @@ local_db = "users_db.db"
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
-app.config['SESSION_COOKIE_SECURE'] = True
-app.config['SESSION_COOKIE_HTTPONLY'] = True
-app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+# app.config['SESSION_COOKIE_SECURE'] = True
+# app.config['SESSION_COOKIE_HTTPONLY'] = True
+# app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 
 
 @app.route('/')
@@ -92,6 +92,7 @@ def edit_profile():
                     password,
                     session['user_name']
                 )
+
                 if not is_user(new_user_details[0]) or new_user_details[0] == session['user_name']:
                     update_user(new_user_details)
                     return render_template('update_success.html', new_user_details= new_user_details)
@@ -168,4 +169,4 @@ def is_user(user_name_input):
     return False
 
 if __name__ == '__main__':
-    app.run()
+    app.run(ssl_context=('cert.pem', 'key.pem'))
