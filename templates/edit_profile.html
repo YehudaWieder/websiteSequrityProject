@@ -24,34 +24,55 @@
     <hr class="my-4">
 </div>
 <h6 class="display-6 container mt-5">Edit your profile details.</h6>
-<form action="http://localhost:5000/edit_profile" method="post" class="container mt-5 mb-5">
+<form action="http://localhost:5000/edit_profile" method="post" onsubmit="return validationPass()"
+      class="container mt-5 mb-5">
     <div class="mb-3">
         <label for="exampleInputEmail1" class="form-label">user name</label>
-        <input type="text" class="form-control" id="user_name" name="user_name" value="{{ user_data[0][0] }}" aria-describedby="emailHelp">
+        <input type="text" class="form-control" id="user_name" name="user_name" value="{{ user_data[0][0] }}"
+               aria-describedby="emailHelp" required>
     </div>
     <div class="mb-3">
         <label for="exampleInputEmail1" class="form-label">firstname</label>
-        <input type="text" class="form-control" id="firstname" name="firstname" value="{{ user_data[0][1] }}" aria-describedby="emailHelp">
+        <input type="text" class="form-control" id="firstname" name="firstname" value="{{ user_data[0][1] }}"
+               aria-describedby="emailHelp" required>
     </div>
     <div class="mb-3">
         <label for="exampleInputPassword1" class="form-label">surname</label>
-        <input type="text" class="form-control" id="surname" name="surname" value="{{ user_data[0][2] }}">
+        <input type="text" class="form-control" id="surname" name="surname" value="{{ user_data[0][2] }}" required>
     </div>
     <div class="mb-3">
         <label for="exampleInputPassword1" class="form-label">current password</label>
-        <input type="text" class="form-control" id="current_password" name="current_password" value="{{ user_data[0][3] }}">
+        <input type="password" class="form-control" id="current_password" name="current_password"
+               placeholder="enter your current password" required>
     </div>
     <div class="mb-3">
         <label for="exampleInputPassword1" class="form-label">new password</label>
-        <input type="text" class="form-control" id="new_password" name="new_password" value="{{ user_data[0][3] }}">
+        <input type="password" class="form-control" id="new_password" name="new_password"
+               placeholder="enter your new password">
     </div>
     <div class="mb-3">
         <label for="exampleInputEmail1" class="form-label">new password verification</label>
-        <input type="text" class="form-control" id="new_password_verification" name="new_password_verification" value="{{ user_data[0][3] }}"
+        <input type="password" class="form-control" id="new_password_verification" name="new_password_verification"
+               placeholder="verify your new password"
                aria-describedby="emailHelp">
+        <p id="error_message" style="color:red"></p>
+
     </div>
     <button type="submit" class="btn btn-primary btn-dark">save changes</button>
 </form>
+
+<script>
+    function validationPass() {
+        let password = document.getElementById("new_password").value;
+        let password_verification = document.getElementById("new_password_verification").value;
+
+        if(password !== password_verification) {
+            document.getElementById("error_message").innerText = "The passwords don't match";
+            return false;
+        }
+        return true
+    }
+</script>
 
 <!-- Optional JavaScript; choose one of the two! -->
 

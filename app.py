@@ -32,8 +32,10 @@ def sign_up():
             request.form['surname'],
             request.form['password']
         )
-        insert_user(user_details)
-        return render_template('sign_up_success.html')
+        if not is_user(user_details[0]):
+            insert_user(user_details)
+            return render_template('sign_up_success.html')
+        return render_template('sign_up_failed.html')
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -74,15 +76,31 @@ def edit_profile():
             user_data = user_query(session['user_name'])
             return render_template('edit_profile.html', user_data=user_data)
         else:
-            new_user_details = (
-                request.form['user_name'],
-                request.form['firstname'],
-                request.form['surname'],
-                request.form['new_password'],
-                session['user_name']
-            )
-            update_user(new_user_details)
-            return render_template('update_success.html', new_user_details= new_user_details)
+            current_pass = request.form['current_password']
+            new_pass = request.form['new_password']
+
+            if authenticate_user(session['user_name'], current_pass):
+                if new_pass:
+                    password = new_pass
+                else:
+                    password = current_pass
+
+                new_user_details = (
+                    request.form['user_name'],
+                    request.form['firstname'],
+                    request.form['surname'],
+                    password,
+                    session['user_name']
+                )
+                if not is_user(new_user_details[0]) or new_user_details[0] == session['user_name']:
+                    update_user(new_user_details)
+                    return render_template('update_success.html', new_user_details= new_user_details)
+                else:
+                    user_data = user_query(session['user_name'])
+                    return render_template('edit_profile_failed.html', user_data=user_data, text_error="THIS USERNAME IS ALREADY IN USE, PLEASE TRY AGAIN")
+            else:
+                user_data = user_query(session['user_name'])
+                return render_template('edit_profile_failed.html', user_data= user_data, text_error= "INCORRECT PASSWORD, PLEASE TRY AGAIN.")
     else:
         return redirect(url_for('login'))
 
@@ -130,14 +148,24 @@ def insert_user(user_details):
 
 
 def update_user(new_details):
-    print(new_details)
     connection = sqlite3.connect(local_db)
     cursor = connection.cursor()
     sql_execute_string = 'UPDATE users_table SET user_name = ?, firstname = ?, surname = ?, password = ? WHERE user_name = ?'
+    hashed_password = bcrypt.hashpw(new_details[3].encode(), bcrypt.gensalt())
+    new_details = (new_details[0], new_details[1], new_details[2], hashed_password, new_details[4])
     cursor.execute(sql_execute_string, new_details)
     connection.commit()
     connection.close()
 
+def is_user(user_name_input):
+    connection = sqlite3.connect(local_db)
+    cursor = connection.cursor()
+    sql_execute_string = "SELECT * FROM users_table WHERE user_name = ?"
+    cursor.execute(sql_execute_string, (user_name_input,))
+    user_data = cursor.fetchall()
+    if user_data:
+        return True
+    return False
 
 if __name__ == '__main__':
     app.run()

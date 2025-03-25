@@ -16,10 +16,8 @@
 
 
 <div class="jumbotron container mt-3 mb-5">
-    <a class="btn btn-primary btn-lg btn-dark" href="{{ url_for('home_page') }}" role="button">home page</a>
     <a class="btn btn-primary btn-lg btn-dark" href="{{ url_for('sign_up') }}" role="button">sign up</a>
     <a class="btn btn-primary btn-lg btn-dark" href="{{ url_for('login') }}" role="button">login</a>
-    <a class="btn btn-primary btn-lg btn-dark" href="{{ url_for('my_profile') }}" role="button">my profile</a>
     <h1 class="display-4 mt-5">My first cybersecurity project</h1>
     <p class="lead">Login page.</p>
     <hr class="my-4">
@@ -30,11 +28,11 @@
 <form action="http://localhost:5000/login" method="post" class="container mt-5 mb-5">
     <div class="mb-3">
         <label for="exampleInputEmail1" class="form-label">user name</label>
-        <input type="text" class="form-control" id="user_name" name="user_name" aria-describedby="emailHelp">
+        <input type="text" class="form-control" id="user_name" name="user_name" aria-describedby="emailHelp" required>
     </div>
     <div class="mb-3">
         <label for="exampleInputPassword1" class="form-label">password</label>
-        <input type="text" class="form-control" id="password" name="password">
+        <input type="password" class="form-control" id="password" name="password" required>
     </div>
     <button type="submit" class="btn btn-primary btn-dark">login</button>
 </form>

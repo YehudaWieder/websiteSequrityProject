@@ -10,51 +10,61 @@
           integrity="sha384-dpuaG1suU0eT09tx5plTaGMLBsfDLzUCCUXOY2j/LSvXYuG6Bqs43ALlhIqAJVRb" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
 
-    <title>sign up</title>
+    <title>edit profile</title>
 </head>
-
 <body>
 
 
 <div class="jumbotron container mt-3 mb-5">
-    <a class="btn btn-primary btn-lg btn-dark" href="{{ url_for('sign_up') }}" role="button">sign up</a>
-    <a class="btn btn-primary btn-lg btn-dark" href="{{ url_for('login') }}" role="button">login</a>
+    <a class="btn btn-primary btn-lg btn-dark" href="{{ url_for('home_page') }}" role="button">home page</a>
+    <a class="btn btn-primary btn-lg btn-dark" href="{{ url_for('my_profile') }}" role="button">my profile</a>
+    <a class="btn btn-primary btn-lg btn-dark" href="{{ url_for('logout') }}" role="button">logout</a>
     <h1 class="display-4 mt-5">My first cybersecurity project.</h1>
-    <p class="lead">Sign up page.</p>
+    <p class="lead">edit profile page.</p>
     <hr class="my-4">
 </div>
-<h6 class="display-6 container mt-5">You have no an account please sign up.</h6>
-<form action="http://localhost:5000/sign_up" method="post" onsubmit="return validationPass()"
+<h6 class="display-6 container mt-5">{{ text_error }}</h6>
+<form action="http://localhost:5000/edit_profile" method="post" onsubmit="return validationPass()"
       class="container mt-5 mb-5">
     <div class="mb-3">
         <label for="exampleInputEmail1" class="form-label">user name</label>
-        <input type="text" class="form-control" id="user_name" name="user_name" aria-describedby="emailHelp">
+        <input type="text" class="form-control" id="user_name" name="user_name" value="{{ user_data[0][0] }}"
+               aria-describedby="emailHelp" required>
     </div>
     <div class="mb-3">
         <label for="exampleInputEmail1" class="form-label">firstname</label>
-        <input type="text" class="form-control" id="firstname" name="firstname" aria-describedby="emailHelp">
+        <input type="text" class="form-control" id="firstname" name="firstname" value="{{ user_data[0][1] }}"
+               aria-describedby="emailHelp" required>
     </div>
     <div class="mb-3">
         <label for="exampleInputPassword1" class="form-label">surname</label>
-        <input type="text" class="form-control" id="surname" name="surname">
+        <input type="text" class="form-control" id="surname" name="surname" value="{{ user_data[0][2] }}" required>
     </div>
     <div class="mb-3">
-        <label for="exampleInputPassword1" class="form-label">password</label>
-        <input type="password" class="form-control" id="password" name="password">
+        <label for="exampleInputPassword1" class="form-label">current password</label>
+        <input type="password" class="form-control" id="current_password" name="current_password"
+               placeholder="enter your current password" required>
     </div>
     <div class="mb-3">
-        <label for="exampleInputEmail1" class="form-label">password_verification</label>
-        <input type="password" class="form-control" id="password_verification" name="password_verification"
+        <label for="exampleInputPassword1" class="form-label">new password</label>
+        <input type="password" class="form-control" id="new_password" name="new_password"
+               placeholder="enter your new password">
+    </div>
+    <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">new password verification</label>
+        <input type="password" class="form-control" id="new_password_verification" name="new_password_verification"
+               placeholder="verify your new password"
                aria-describedby="emailHelp">
         <p id="error_message" style="color:red"></p>
+
     </div>
-    <button type="submit" class="btn btn-primary btn-dark">sign_up</button>
+    <button type="submit" class="btn btn-primary btn-dark">save changes</button>
 </form>
 
 <script>
     function validationPass() {
-        let password = document.getElementById("password").value;
-        let password_verification = document.getElementById("password_verification").value;
+        let password = document.getElementById("new_password").value;
+        let password_verification = document.getElementById("new_password_verification").value;
 
         if(password !== password_verification) {
             document.getElementById("error_message").innerText = "The passwords don't match";
